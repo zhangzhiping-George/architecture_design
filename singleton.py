@@ -48,10 +48,33 @@ assert test_single(Singleton_meta) is True
 
 
 
-# shared status pattern
-class SharedObjstatus:
-    _status = {}
-    def __init__(self,  *args, **kwargs):
-        self.__class__.__dict__ = _status
+# shared states pattern
+class SharedStatesCls:
+    # shared states container created
+    # for instances states sharing
+    # in __dict__ of every instance
+    __shared_states = {}
+    def __init__(self):
+        # how does it work: self(instance) accesses class attribute(__shared_states)
+        # but instance attribute deny class access
+        # self.__dict__ = self.__class__.__shared_states
+        # self.__dict__ = self._SharedStatesCls__shared_states 
+        self.__dict__ = self.__shared_states 
+
+class Singleton_sharedStates(SharedStatesCls):
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        self.initstate = 'shared_initstate' 
         self.args = args
         self.kwargs = kwargs
+
+ci1 = Singleton_sharedStates()
+# ci2 = Singleton_sharedStates(2, b='b')
+ci2 = Singleton_sharedStates() 
+
+ci2.dynamicattr1 = 'running'
+
+print('vars(ci1): ', vars(ci1))
+print('vars(ci2): ', vars(ci2))
+#assert ci1 is ci2
+#assert ci1 == ci2
