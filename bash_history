@@ -1,5 +1,3 @@
-set -o vi
-clear
 python3 schedule.py 
 clear
 python3 schedule.py 
